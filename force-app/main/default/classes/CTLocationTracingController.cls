@@ -2,13 +2,14 @@ public with sharing class CTLocationTracingController {
     public static List<Location_Tracing__c> getVisitors(String locationId) {
         return [SELECT Id, Name, Person__c, Person__r.Name, Location__c,Location__r.Name,Visit_Date__c
         FROM Location_Tracing__c
+        WHERE Location__c = :locationId
         ORDER BY Visit_Date__c DESC];
     }
 
     public static List<Location_Tracing__c> getLocationsByPersonIds(Set<Id> personIds){
         return [SELECT Id, Name, Person__c, Person__r.Name, Location__c,Location__r.Name,Visit_Date__c
         FROM Location_Tracing__c
-        WHERE Person__c IN :personIds AND Visit_Date__c >= :Date.today().addDays(-10)
+        WHERE Person__c IN :personIds AND Visit_Date__c = LAST_N_DAYS:10
         ORDER BY Visit_Date__c DESC];
     }
     /*
@@ -69,4 +70,6 @@ public with sharing class CTLocationTracingController {
 
         return duplicatedList;
     }
+
+
 }
