@@ -17,17 +17,17 @@ public with sharing class CTLocationTriggerHandler {
     public static void afterUpdateHandler(List<Location__c> newList, Map<Id,Location__c> oldMap){
         Set<Id> locationIds = new Set<Id>();
         for(Location__c location : newList){
-            if(location.Status__c != oldMap.get(location.Id).Status__c && location.Status__c == 'Red'){
+            if(oldMap.get(location.Id).Status__c != 'Red' && location.Status__c == 'Red'){
                 locationIds.add(location.Id);
             }
         }
       
-        Set<Id> personIds = CTPersonController.getPeopleByLocations(locationIds, new List<String>{'Green','Yellow'});
+        List<Location_Tracing__c> locationTraces = CTLocationTracingController.getLocationsByLocationsIds(locationIds);
         List<Person__c> peopleToUpdate = new List<Person__c>();
-        for (Id per : personIds) {
+        for (Location_Tracing__c trace : locationTraces) {
             peopleToUpdate.add(
                 new Person__c(
-                    Id=per,
+                    Id=trace.Person__c,
                     Health_Status__c='Yellow'
                 )
             );

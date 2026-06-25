@@ -147,21 +147,4 @@ public with sharing class CTPersonController {
         return secondaryContacts;
     }
 
-    public static Set<Id> getPeopleByLocations(Set<Id> locationIds, List<String> healthStatus) {
-        Set<Id> personIds = new Set<Id>();
-        List<Location_Tracing__c> locationTraces = [
-            SELECT Id, Person__c
-            FROM Location_Tracing__c
-            WHERE Location__c IN :locationIds 
-            AND Person__r.Health_Status__c IN:healthStatus 
-            AND Visit_Date__c = LAST_N_DAYS:10
-        ];
-
-        for (Location_Tracing__c trace : locationTraces) {
-            personIds.add(trace.Person__c);
-        }
-
-        return personIds;
-    }
-
 }
